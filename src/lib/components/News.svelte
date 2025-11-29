@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Flex, Wrapper, Button, New, Modal } from '$lib/components';
+import { Flex, Wrapper, Button, New, Modal, Paginator } from '$lib/components';
 import { technology, article } from '$lib/icons';
 import { NEWS } from '$lib/data/News';
 import type { INew, ITag } from '$lib/interface';
@@ -45,7 +45,7 @@ function getColor(tag: string): string {
             </Button>
         {/each}
     </Flex>
-    <Flex className="flex-wrap gap-5 m-auto grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+    <Flex className="flex-wrap gap-5 m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {#each news as item, i}
             <New 
             onclick={() => setNew(item)} 
@@ -55,6 +55,9 @@ function getColor(tag: string): string {
             hover={hover == i}
             color={getColor(item.tag)}/>
         {/each}
+    </Flex>
+    <Flex className="w-full justify-center">
+        <Paginator currentPage={2} pages={6} />
     </Flex>
 </Wrapper>
 
