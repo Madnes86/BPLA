@@ -34,7 +34,7 @@ function getColor(tag: string): string {
 
 <Wrapper className="flex-col items-start">
     <h2 class="text-gray-300 my-4">Последнии новости</h2>
-    <Flex>
+    <Flex className="flex-wrap">
         {#each tags as {icon: Icon, name, color}, i}
             <Button 
                 onclick={() => setTag(tags[i])} 

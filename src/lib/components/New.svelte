@@ -11,7 +11,7 @@ let {
     hover?: boolean;
     color?: string;
 } = $props();
-console.log(color)
+
 </script>
 
 <Flex 

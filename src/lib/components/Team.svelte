@@ -4,6 +4,7 @@ import { artem, denis, pasha, vadim } from '$lib/img';
     import { fade } from 'svelte/transition';
 
 let selected: number = $state(0);
+let width: number = $state(0);
 const TEAM: { src: string, name: string, desc: string }[] = [
     {src: artem, name: 'Лисимов Артем', desc: 'Руководитель - организация мероприятий и управление лабораторией'},
     {src: denis, name: 'Денис Александрович', desc: 'Специались по связям и пилот, взаимодействует с людьми и инструктирутет полеты'},
@@ -15,6 +16,8 @@ const setSelected = (i: number) => selected = i;
 
 </script>
 
+<svelte:window bind:innerWidth={width} />
+
 <Wrapper className="text-gray-300">
     <h3>Наша команда</h3>
 </Wrapper>
@@ -23,7 +26,7 @@ const setSelected = (i: number) => selected = i;
         {#each TEAM as {src, name, desc}, i}
             <Flex>
                 <img onmouseenter={() => setSelected(i)} {src} alt="" class="min-w-24 size-24 rounded-full">
-                {#if selected == i}
+                {#if selected == i && width > 768}
                     <div in:fade={{ duration: 500}} class="flex flex-col w-60 text-white">
                         <h4 class="text-md">{name}</h4>
                         <p class="text-sm">{desc}</p>
