@@ -1,31 +1,30 @@
 <script lang="ts">
-import { Flex, Wrapper, Button, Modal } from '$lib/components';
+import { Flex, Wrapper, Button, New, Modal } from '$lib/components';
 import { technology, article } from '$lib/icons';
 import { NEWS } from '$lib/data/News';
 import type { INew, ITag } from '$lib/interface';
 
 let tags: ITag[] = [
     { icon: technology, name: 'Технологии', color: 'blue' },
-    { icon: article, name: 'Статья', color: 'yellow' }
+    { icon: technology, name: 'Проект', color: 'blue' },
+    { icon: article, name: 'Статья', color: 'yellow' },
+    { icon: article, name: 'Событие', color: 'red' }
 ];
-let hover: number = $state(1000);
-let show: any = $state(false);
-let selected: INew = $state(NEWS[0]);
-let selectedTag: ITag | null = $state(null);
+let hover: number = $state(-1);
+let show: boolean = $state(false);
+let selTag: ITag | null = $state(null);
 let news = $derived.by(() => {
-    let el = selectedTag ? NEWS.filter(e => e.tag == selectedTag?.name) : NEWS;
-    return el.filter(e => e.date <= new Date()).reverse();
+    let news = selTag ? NEWS.filter(e => e.tag == selTag?.name) : NEWS;
+    return news.filter(e => e.date <= new Date()).reverse();
 });
-function setSelected(e: INew) {
-    selected = e;
+// svelte-ignore state_referenced_locally
+let selNew: INew = $state(news[0]);
+function setNew(e: INew) {
+    selNew = e;
     show = true;
 }
 function setTag(tag: ITag) {
-    if (selectedTag?.name != tag.name) {
-        selectedTag = tag;
-    } else {
-        selectedTag = null;
-    }
+    selTag = selTag?.name == tag.name ? null : tag
 }
 function getColor(tag: string): string {
     const foundTag = tags.find(e => e.name == tag);
@@ -37,27 +36,24 @@ function getColor(tag: string): string {
     <h2 class="text-gray-300 my-4">Последнии новости</h2>
     <Flex>
         {#each tags as {icon: Icon, name, color}, i}
-            <Button onclick={() => setTag(tags[i])} style={selectedTag?.name == name ? `background: ${color}; color: white; border-color: ${color}` : `border-color: ${color}; color: ${color}`} className="border-2 p-1!">
-                <Icon fill={selectedTag?.name == name ? 'white' : `${color}`}/>
+            <Button 
+                onclick={() => setTag(tags[i])} 
+                style={selTag?.name == name ? `background: ${color}; color: white; border-color: ${color}` : `border-color: ${color}; color: ${color}`} 
+                className="border-2 p-1!">
+                <Icon fill={selTag?.name == name ? 'white' : `${color}`}/>
                 <p>{name}</p>
             </Button>
         {/each}
     </Flex>
     <Flex className="flex-wrap gap-5 m-auto grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-        {#each news as {src, title, imgs, text, tag, date}, i}
-            <Flex 
-                col 
-                onclick={() => {setSelected(NEWS[i])}} 
-                onmouseenter={() => hover = i} 
-                onmouseleave={() => hover = 1000} 
-                style="background: {getColor(tag)}" 
-                className="min-w-50 max-w-70 w-full text-white click">
-                <div class="overflow-hidden">
-                    <img src={src} alt="" class="{hover == i && 'scale-115'} transition-all object-cover aspect-4/3">
-                </div>
-                <h3 class="text-ellipsis p-2 w-full h-22 text-center">{title}</h3>
-                <p class="p-2">{date.toLocaleDateString('ru-RU')}</p>
-            </Flex>
+        {#each news as item, i}
+            <New 
+            onclick={() => setNew(item)} 
+            onmouseenter={() => hover = i}
+            onmouseleave={() => hover = -1}
+            {item}
+            hover={hover == i}
+            color={getColor(item.tag)}/>
         {/each}
     </Flex>
 </Wrapper>
@@ -66,16 +62,16 @@ function getColor(tag: string): string {
     <Modal bind:show={show}>
         {#snippet header()}
             <h3 class="whitespace-nowrap">
-                {selected?.title}
+                {selNew?.title}
             </h3>
         {/snippet}
         <div>
-            {#each selected.imgs as src}
+            {#each selNew.imgs as src}
                 <img {src} alt="" class="w-80">
             {/each}
         </div>
-        <div class=" overflow-auto">
-            {@html selected?.text}
+        <div class="max-h-120 overflow-auto">
+            {@html selNew?.text}
         </div>
     </Modal>
 {/if}

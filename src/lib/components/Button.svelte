@@ -13,6 +13,6 @@ let {
 } = $props();
 </script>
 
-<button class="flex gap-2 border-sm p-2 click {className}" {...rest}>
+<button class="flex gap-2 border-sm p-2 click justify-center {className}" {...rest}>
     {@render children()}
 </button>

@@ -15,7 +15,6 @@ let {
     children: Snippet;
     header?: Snippet;
 } = $props();
-
 const close = () => show = false;
 
 </script>

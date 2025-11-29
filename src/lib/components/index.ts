@@ -11,3 +11,6 @@ export { default as News } from './News.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as Footer } from './Footer.svelte';
 export { default as Link } from './Link.svelte';
+export { default as New } from './New.svelte';
+export { default as Slide1 } from './Slide1.svelte';
+export { default as Ping } from './Ping.svelte';
