@@ -24,13 +24,13 @@ const add = (i: number) => hovered.push(i);
             <Flex className="{i % 2 == 1 ? 'flex-row-reverse' : ''} max-md:flex-col md:w-full">
                 <Spacer />
                 {#if hovered.includes(i) || 768 > width}
-                <div transition:fly={{ x: 100 }} class="translate-y-6 gap-4 flex flex-col">
+                <div transition:fly={{ x: 100 }} class="gap-4 flex flex-col">
                     <h3>{title}</h3>
                     <p class="text-justify">{text}</p>
                     <Button className="bg-black text-white">Подробнее</Button>
                 </div>
                 {/if}
-                <div class="min-w-100 relative">
+                <div class="md:min-w-100 relative">
                     <img onmouseenter={() => add(i)} {src} alt="" class="w-100">
                     {#if !hovered.includes(i) && 768 < width}
                         <div out:fade class="animate-bounce absolute left-50 top-8 size-4 rounded-full bg-blue-400"></div>
