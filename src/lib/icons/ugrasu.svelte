@@ -1,0 +1,1 @@
+<img src="https://itport.ugrasu.ru/img/modules/lk/stud/no-avatar.png" alt="">
