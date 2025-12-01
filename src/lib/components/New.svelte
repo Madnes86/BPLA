@@ -27,6 +27,6 @@ className="min-w-50 max-w-70 w-full gap-0! cursor-pointer" {...rest}>
         class="{hover && 'scale-115'} transition-all object-cover aspect-4/3">
     </div>
     <h3 
-    class="text-ellipsis p-2 w-full h-22 text-center">{item.title}</h3>
+    class="line-clamp-2 p-2 w-full h-22 text-center">{item.title}</h3>
     <p class="p-2">{item.date.toLocaleDateString('ru-RU')}</p>
 </Flex>

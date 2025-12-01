@@ -5,17 +5,18 @@ import { NEWS } from '$lib/data/News';
 import type { INew, ITag } from '$lib/interface';
 
 let tags: ITag[] = [
-    { icon: technology, name: 'Технологии', color: 'blue' },
-    { icon: technology, name: 'Проект', color: 'blue' },
-    { icon: article, name: 'Статья', color: 'yellow' },
-    { icon: article, name: 'Событие', color: 'red' }
+    { icon: technology, name: 'Проект', color: 'orange' },
+    { icon: article, name: 'Статья', color: 'green' },
+    { icon: article, name: 'Событие', color: 'red' },
+    { icon: article, name: 'Отчет', color: 'blue'}
 ];
 let hover: number = $state(-1);
 let show: boolean = $state(false);
 let selTag: ITag | null = $state(null);
 let news = $derived.by(() => {
     let news = selTag ? NEWS.filter(e => e.tag == selTag?.name) : NEWS;
-    return news.filter(e => e.date <= new Date()).reverse();
+    news.filter(e => e.date <= new Date()).reverse();
+    return news.sort((a, b) => b.date.getTime() - a.date.getTime());
 });
 // svelte-ignore state_referenced_locally
 let selNew: INew = $state(news[0]);
@@ -73,8 +74,6 @@ function getColor(tag: string): string {
                 <img {src} alt="" class="w-80">
             {/each}
         </div>
-        <div class="max-h-120 overflow-auto">
-            {@html selNew?.text}
-        </div>
+        {@html selNew?.text}
     </Modal>
 {/if}
