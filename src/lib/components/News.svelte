@@ -63,17 +63,19 @@ function getColor(tag: string): string {
 </Wrapper>
 
 {#if show}
-    <Modal bind:show={show}>
+    <Modal bind:show={show} lineColor={getColor(selNew.tag || '')}>
         {#snippet header()}
             <h3 class="whitespace-nowrap">
                 {selNew?.title}
             </h3>
         {/snippet}
-        <div>
-            {#each selNew.imgs as src}
-                <img {src} alt="" class="w-80">
-            {/each}
-        </div>
+        {#if selNew.imgs}
+            <div class="mn-h-150 flex gap-8 overflow-auto snap-x snap-mandatory">
+                {#each selNew.imgs as src}
+                    <img {src} alt="" class="snap-center size-150 object-cover">
+                {/each}
+            </div>
+        {/if}
         {@html selNew?.text}
     </Modal>
 {/if}
