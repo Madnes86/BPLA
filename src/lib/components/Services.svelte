@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Flex, Wrapper, Spacer, Button } from '$lib/components';
+import { Flex, Wrapper, Spacer, Button, Modal } from '$lib/components';
 import { fade, fly } from 'svelte/transition';
 
 const SERVICES: {title: string, text: string, src: string}[] = [
@@ -11,8 +11,20 @@ const SERVICES: {title: string, text: string, src: string}[] = [
 
 let hovered: number[] = $state([0]);
 let width: number = $state(0);
+let show: boolean = $state(false);
+let selSer: {title: string, text: string, src: string} = $state(SERVICES[0]);
 const add = (i: number) => hovered.push(i);
 
+const BOT_URL = 'https://t.me/BPLA86_BOT';
+// per-service payload so the request link carries which service it is for
+const SERVICE_SLUGS = ['print3d', 'simulator', 'model3d', 'drones'];
+const botLink = (s: { title: string }) =>
+    `${BOT_URL}?start=service_${SERVICE_SLUGS[SERVICES.findIndex(x => x.title === s.title)] ?? ''}`;
+
+function openService(s: { title: string, text: string, src: string }) {
+    selSer = s;
+    show = true;
+}
 </script>
 
 <svelte:window bind:innerWidth={width} />
@@ -27,7 +39,7 @@ const add = (i: number) => hovered.push(i);
                 <div transition:fly={{ x: 100 }} class="gap-4 flex flex-col">
                     <h3>{title}</h3>
                     <p class="text-justify">{text}</p>
-                    <Button className="bg-black text-white">Подробнее</Button>
+                    <Button onclick={() => openService(SERVICES[i])} className="bg-black text-white">Подробнее</Button>
                 </div>
                 {/if}
                 <div class="md:min-w-100 relative">
@@ -41,4 +53,15 @@ const add = (i: number) => hovered.push(i);
     </Flex>
 </Wrapper>
 
-
+{#if show}
+    <Modal bind:show={show}>
+        <h2>{selSer.title}</h2>
+        <p class="my-3">{selSer.text}</p>
+        <a
+            href={botLink(selSer)}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex gap-2 border-sm p-2 click justify-center bg-black text-white"
+        >Оставить заявку в Telegram</a>
+    </Modal>
+{/if}

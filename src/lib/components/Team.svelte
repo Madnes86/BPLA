@@ -28,7 +28,7 @@ function setSelected(i: number) {
 <Wrapper className="text-gray-300">
     <h3>Наша команда</h3>
 </Wrapper>
-<div class="p-4 bg-gray-300">
+<div id="team" class="p-4 bg-gray-300">
     <Wrapper className="gap-4 overflow-auto">
         {#each TEAM as {src, name, desc}, i}
             <Flex className="relative">

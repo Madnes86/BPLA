@@ -15,3 +15,4 @@ export { default as New } from './New.svelte';
 export { default as Slide1 } from './Slide1.svelte';
 export { default as Ping } from './Ping.svelte';
 export { default as Paginator } from './Paginator.svelte';
+export { default as Content } from './Content.svelte';

@@ -1,40 +1,56 @@
 <script lang="ts">
-import { Flex, Wrapper, Button, New, Modal, Paginator } from '$lib/components';
+import { onMount } from 'svelte';
+import { Flex, Wrapper, Button, New, Modal, Paginator, Content } from '$lib/components';
 import { technology, article } from '$lib/icons';
-import { NEWS } from '$lib/data/News';
 import type { INew, ITag } from '$lib/interface';
 
 let tags: ITag[] = [
     { icon: technology, name: 'Проект', color: 'orange' },
     { icon: article, name: 'Статья', color: 'green' },
     { icon: article, name: 'Событие', color: 'red' },
-    { icon: article, name: 'Отчет', color: 'blue'}
+    { icon: article, name: 'Отчёт', color: 'blue'}
 ];
 let hover: number = $state(-1);
 let show: boolean = $state(false);
 let selTag: ITag | null = $state(null);
-let news = $derived.by(() => {
-    let news = selTag ? NEWS.filter(e => e.tag == selTag?.name) : NEWS;
-    news.filter(e => e.date <= new Date()).reverse();
-    return news.sort((a, b) => b.date.getTime() - a.date.getTime());
+let allNews: INew[] = $state([]);
+let selNew: INew | null = $state(null);
+
+onMount(async () => {
+    try {
+        const res = await fetch('/news.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        allNews = data.map((e: any) => ({ ...e, date: new Date(e.date) }));
+    } catch {
+        allNews = [];
+    }
 });
-// svelte-ignore state_referenced_locally
-let selNew: INew = $state(news[0]);
+
+const PER_PAGE = 12;
+let page = $state(0);
+let news = $derived.by(() => {
+    const list = selTag ? allNews.filter(e => e.tag == selTag?.name) : allNews;
+    return [...list].sort((a, b) => b.date.getTime() - a.date.getTime());
+});
+let pageCount = $derived(Math.max(1, Math.ceil(news.length / PER_PAGE)));
+let paged = $derived(news.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE));
 function setNew(e: INew) {
     selNew = e;
     show = true;
 }
 function setTag(tag: ITag) {
-    selTag = selTag?.name == tag.name ? null : tag
+    selTag = selTag?.name == tag.name ? null : tag;
+    page = 0;
 }
-function getColor(tag: string): string {
+function getColor(tag: string | undefined): string {
     const foundTag = tags.find(e => e.name == tag);
     return foundTag ? foundTag.color : 'gray';
 }
 </script>
 
 <Wrapper className="flex-col items-start">
-    <h2 class="text-gray-300 my-4">Последнии новости</h2>
+    <h2 id="news" class="text-gray-300 my-4">Последнии новости</h2>
     <Flex className="flex-wrap">
         {#each tags as {icon: Icon, name, color}, i}
             <Button 
@@ -47,9 +63,9 @@ function getColor(tag: string): string {
         {/each}
     </Flex>
     <Flex className="flex-wrap gap-5 m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-        {#each news as item, i}
-            <New 
-            onclick={() => setNew(item)} 
+        {#each paged as item, i}
+            <New
+            onclick={() => setNew(item)}
             onmouseenter={() => hover = i}
             onmouseleave={() => hover = -1}
             {item}
@@ -57,25 +73,27 @@ function getColor(tag: string): string {
             color={getColor(item.tag)}/>
         {/each}
     </Flex>
-    <Flex className="w-full justify-center">
-        <Paginator currentPage={2} pages={6} />
-    </Flex>
+    {#if pageCount > 1}
+        <Flex className="w-full justify-center">
+            <Paginator bind:currentPage={page} pages={pageCount} />
+        </Flex>
+    {/if}
 </Wrapper>
 
 {#if show}
-    <Modal bind:show={show} lineColor={getColor(selNew.tag || '')}>
+    <Modal bind:show={show} lineColor={getColor(selNew?.tag || '')}>
         {#snippet header()}
             <h3 class="whitespace-nowrap">
                 {selNew?.title}
             </h3>
         {/snippet}
-        {#if selNew.imgs}
-            <div class="mn-h-150 flex gap-8 overflow-auto snap-x snap-mandatory">
-                {#each selNew.imgs as src}
+        {#if selNew?.imgs?.length}
+            <div class="min-h-150 flex gap-8 overflow-auto snap-x snap-mandatory">
+                {#each selNew?.imgs ?? [] as src}
                     <img {src} alt="" class="snap-center size-150 object-cover">
                 {/each}
             </div>
         {/if}
-        {@html selNew?.text}
+        <Content md={selNew?.text || ''} />
     </Modal>
 {/if}

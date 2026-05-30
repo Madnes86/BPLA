@@ -16,7 +16,8 @@ const SLIDES = [
         button: 'Подробнее'
     },
     {
-        src: 'https://img.freepik.com/premium-vector/realistic-isometric-illustration-landing-drone-modern-isometric-vector-illustration_88188-1158.jpg',
+        // src: 'https://img.freepik.com/premium-vector/realistic-isometric-illustration-landing-drone-modern-isometric-vector-illustration_88188-1158.jpg',
+        src: 'src/lib/img/font1.png',
         title: 'Кастомизация дронов под ваши нужды',
         profit: [
             'Подбор компонентов под конкретные задачи',
@@ -44,11 +45,11 @@ function setSlide(dir: boolean) {
 }
 function resetInterval() {
     clearInterval(intervalId);
-    intervalId = setInterval(() => setSlide(true), 3_000);
+    intervalId = setInterval(() => setSlide(true), 7_000);
 }
 
 onMount(() => {
-    intervalId = setInterval(() => setSlide(true), 3_000);
+    intervalId = setInterval(() => setSlide(true), 7_000);
     return () => clearInterval(intervalId);
 });
 

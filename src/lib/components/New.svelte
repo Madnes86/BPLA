@@ -20,11 +20,11 @@ style="background: {hover && color}; color: {hover ? 'white' : 'black'}"
 className="min-w-50 max-w-70 w-full gap-0! cursor-pointer" {...rest}>
     <div 
     style="border-bottom: solid 10px {color}"
-    class="overflow-hidden">
+    class="overflow-hidden w-full">
         <img 
         src={item.src} 
         alt={item.title} 
-        class="{hover && 'scale-115'} transition-all object-cover aspect-4/3">
+        class="{hover && 'scale-115'} w-full transition-all object-cover aspect-4/3">
     </div>
     <h3 
     class="line-clamp-2 p-2 w-full h-22 text-center">{item.title}</h3>
